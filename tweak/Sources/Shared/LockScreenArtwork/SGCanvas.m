@@ -1,5 +1,5 @@
 #import "SGCanvas.h"
-#import "Shared/Lyrics/Protobuf.h"
+#import "Shared/AdBlock/Protobuf.h"
 
 @implementation SGCanvas
 @end
