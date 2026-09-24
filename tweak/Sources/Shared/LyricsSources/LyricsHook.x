@@ -3,7 +3,7 @@
 // list gets a lyrics section, without which the player never asks for lyrics at all.
 #import "Core/SGCore.h"
 #import "LyricsSources.h"
-#import "Shared/Lyrics/Protobuf.h"
+#import "Shared/AdBlock/Protobuf.h"
 #import "Headers/SPTPlayer.h"
 #import <os/lock.h>
 

@@ -34,7 +34,7 @@
 
 ### Fixes
 
-* Recents with Block telemetry on, lyrics cache eviction, protobuf length overflow, Set rule types, Live Activity update order ([4b21bed](https://github.com/skopevoj/spoti.pw/commit/4b21bed034953c9786521101da9f96197f949b90))
+* Recents with Block telemetry on, Spoof Premium with a 304, lyrics cache eviction, protobuf length overflow, Set rule types, Live Activity update order ([4b21bed](https://github.com/skopevoj/spoti.pw/commit/4b21bed034953c9786521101da9f96197f949b90))
 * trim the Lyrics settings page ([76b8577](https://github.com/skopevoj/spoti.pw/commit/76b85776d1b6c4306ade9f2c84cd8039cbae4b55))
 * trim the Mod Settings descriptions ([79572ae](https://github.com/skopevoj/spoti.pw/commit/79572ae06b2a606f69d8314d87d57d302e1d0999))
 
@@ -124,6 +124,7 @@
 * add LRCLIB as the floor under the other lyrics sources ([ab78945](https://github.com/skopevoj/spoti.pw/commit/ab78945ecc114e3057af446c9d233d3e8f54cd1b))
 * add new record trees flag ([8bbdb6e](https://github.com/skopevoj/spoti.pw/commit/8bbdb6e4eb224df8a7835586848df642068450db))
 * Apple Music style lyrics only in the redesign and always on there, the native karaoke copy gone, and AGENTS.md and CLAUDE.md for agents ([cc24a25](https://github.com/skopevoj/spoti.pw/commit/cc24a25e29eaee1b103ca4019747884d3b3793b3))
+* block the ad card under the player and make crossfade and automix play ([55c3c60](https://github.com/skopevoj/spoti.pw/commit/55c3c60f7726e10e1e3bd3e5d0984b56c003e56a))
 * declutter the album page and put its blurred cover behind the header ([f414321](https://github.com/skopevoj/spoti.pw/commit/f414321444edb8e8261429677c42560f420c93fd))
 * declutter the artist page and fade its photo into a blur ([d169287](https://github.com/skopevoj/spoti.pw/commit/d1692876dcd2f7290cff6da4e5d4f46cb2560f10))
 * Home's shortcut tiles hold their cover inset on a surface tinted faintly by it, instead of the stretched blur ([3de8ea1](https://github.com/skopevoj/spoti.pw/commit/3de8ea1431ebca3243c72a282108c829dfadcb71))

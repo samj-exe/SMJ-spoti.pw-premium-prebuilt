@@ -1,5 +1,5 @@
 #import "Lyrics.h"
-#import "Shared/Lyrics/Protobuf.h"
+#import "Shared/AdBlock/Protobuf.h"
 
 @implementation SGKaraokeWord
 @end

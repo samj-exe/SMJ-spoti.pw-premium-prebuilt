@@ -257,7 +257,7 @@ static BOOL flagRowOn(SGModRow *row) {
     return value && [value boolValue] != row.forceOff;
 }
 
-// A flag something of the mod's forces (Core/SGFlagForce.h: the redesign, the Search switches): its row
+// A flag something of the mod's forces (Core/SGFlagForce.h: the redesign, the ad blocking): its row
 // shows what is forced and takes no touch, so the flag has one place to change.
 static BOOL flagRowLocked(SGModRow *row) {
     return row.flag && SGLockedFlagValue(row.key, NULL) != nil;

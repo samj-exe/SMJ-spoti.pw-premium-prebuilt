@@ -71,7 +71,11 @@ A feature is a directory in its layer holding everything about one area of the a
 
 Shared:
 
-    Privacy/      telemetry blocking and its counters, and the Search switches that force their flags off (Clutter.m)
+    AdBlock/      EeveeSpotify's ad blocking: the ad and upsell services silenced (AdServices.x), ad components out of the
+                  Hub JSON (AdHubs.x) and the feeds (Feeds.m), Premium pop-ups dropped (AdPopups.x), and the responses
+                  rewritten on the way in (AdNetwork.x, Premium.m over the protobuf walker in Protobuf.m), with crossfade
+                  and automix switched on in the player core and crossfade's switch kept in step with its slider (Crossfade.x)
+    Privacy/      telemetry blocking and its counters
     ArtistBlock/  tracks by blocked artists skipped as they start (ArtistSkip.x), the list and the Blocked artists page under Player
     Flags/        Spotify's remote-config flags: the provider hook, the generated table, the All flags page and the Labs page
     Gestures/     the double tap zones on the player: the grid, what each cell does, the recognizer (each look hooks it on)
@@ -275,9 +279,11 @@ sliders, choices, curve or file library while its switch is on, everything apply
 out Off, On or how many effects are on. Home & Library, in the native look only:
 the Gradient page (the wash behind the top of Home in one of eight colours, at three strengths and
 four heights) and the Home flags, the parts of Home to hide including the DJ button and badge, the
-playlist header, buttons and pills to hide, and the Library flags. Then Privacy & clutter
-(Block telemetry; hiding the video carousel and social proof in Search, and a Tips page under them,
-every switch there forcing a flag Spotify ships on to off; then what the telemetry blocking has stopped) and Labs (features Spotify built and did not ship,
+playlist header, buttons and pills to hide, and the Library flags. Then Premium, ads & privacy
+(EeveeSpotify's Hide ads and Hide upsells, hiding the video carousel and social proof in Search, and
+an Ad and upsell flags page under them, every switch there forcing a flag Spotify ships on to off;
+Spoof Premium; Block telemetry; then what the ad
+blocking and the telemetry blocking have stopped) and Labs (features Spotify built and did not ship,
 AI Chat (Martini) first). Last, All flags, Spotify's remote-config flags with a search field and an
 Auto / Off / On control per flag (a text field for the number and text ones), and Mod: Updates
 (the row reads out where the build stands and opens the changelog of everything newer than it, read

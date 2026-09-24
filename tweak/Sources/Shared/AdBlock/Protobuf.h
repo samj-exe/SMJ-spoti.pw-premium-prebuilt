@@ -1,5 +1,5 @@
 // The protobuf wire format, just enough to walk into a message, change a few fields and write it
-// back with everything else untouched. The lyrics read Spotify's replies through it.
+// back with everything else untouched. Premium.m and Feeds.m read Spotify's responses through it.
 #import <Foundation/Foundation.h>
 
 // A field as it sits on the wire: a varint carries its value, everything else its raw payload.
