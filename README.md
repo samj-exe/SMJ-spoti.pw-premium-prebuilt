@@ -2,7 +2,7 @@
   <img src="docs/icon.png" width="96" alt="">
 </p>
 
-<h1 align="center">spoti.pw</h1>
+<h1 align="center">spoti.pw pro</h1>
 
 <p align="center">Spotify, in glass.</p>
 
@@ -29,6 +29,8 @@
   <img src="docs/screenshots/live-activity.webp" width="16%" alt="Live Activity on the lock screen">
   <img src="docs/screenshots/home.webp" width="16%" alt="Home">
 </p>
+
+(Injected with Premium by samj.)
 
 A no-jailbreak Theos tweak that rebuilds Spotify for iOS in Liquid Glass, injected into your own
 decrypted IPA and signed with your own certificate.
