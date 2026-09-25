@@ -3,6 +3,8 @@
 #import <UIKit/UIKit.h>
 #import "Settings/SGModPage.h"
 
+#define SGKeySupportLinks @"spotifyglass.supportLinks"
+
 extern NSString *const SGKofiURL;
 UIColor *SGKofiColor(void);
 
