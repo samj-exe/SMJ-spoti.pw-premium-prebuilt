@@ -148,11 +148,12 @@ NSArray<SGLyricsProvider *> *SGLyricsAllProviders(void) {
             provider.detail = detail;
             // A source that matches by Spotify's own track id has everything it needs from the
             // start; the rest wait for the player to name the track before they can search.
-            provider.needsName = ![key isEqualToString:@"musixmatch"];
+            provider.needsName = ![@[@"musixmatch", @"spicylyrics"] containsObject:key];
             provider.ask = ask;
             return provider;
         };
         all = @[
+            make(@"spicylyrics", @"Spicy Lyrics", @"Syllable timing, uses your Spotify token", SGSpicyLyricsAsk),
             make(@"binilyrics", @"BiniLyrics", @"Apple Music word timing", SGBiniLyricsAsk),
             make(@"musixmatch", @"Musixmatch", @"Spotify's licensed catalogue", SGMusixmatchAsk),
             make(@"unison", @"Unison", @"Hand-timed, few tracks", SGUnisonAsk),

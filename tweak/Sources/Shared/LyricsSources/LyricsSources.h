@@ -4,7 +4,8 @@
 // later one that times every word.
 //
 // SGTTML.m reads the TTML that Apple Music's own lyrics are written in, which is what BiniLyrics and
-// Unison serve. It is the only shape carrying a second voice and the (oh, aye) sung under a line; every other source times lines, or the words inside them, and nothing more.
+// Unison serve. It and Spicy Lyrics are the only shapes carrying a second voice and the (oh, aye)
+// sung under a line; every other source times lines, or the words inside them, and nothing more.
 #import <UIKit/UIKit.h>
 #import "Shared/Lyrics/Lyrics.h"
 
@@ -56,7 +57,7 @@ typedef void (^SGLyricsAsk)(SGLyricsQuery *query, void (^done)(SGLyricsResult *r
 @property (nonatomic, copy) NSString *name;     // "BiniLyrics", what the credit reads
 @property (nonatomic, copy) NSString *detail;   // one line under the name on the Lyrics page
 // Searches by title and artist, so it has nothing to ask with until someone has named the track.
-// Musixmatch matches by Spotify's id and can go without.
+// Musixmatch and Spicy Lyrics match by Spotify's id and can go without.
 @property (nonatomic) BOOL needsName;
 @property (nonatomic, copy) SGLyricsAsk ask;
 @end
@@ -127,5 +128,6 @@ extern SGLyricsAsk SGMusixmatchAsk;
 extern SGLyricsAsk SGUnisonAsk;
 extern SGLyricsAsk SGNetEaseAsk;
 extern SGLyricsAsk SGLrcLibAsk;
+extern SGLyricsAsk SGSpicyLyricsAsk;
 
 UIViewController *SGLyricsSourcesPage(void);   // the ordered list on the Lyrics page
