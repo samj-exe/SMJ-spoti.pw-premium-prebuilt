@@ -181,8 +181,13 @@ static NSArray<NSString *> *fromLegacyKeys(void) {
 }
 
 NSArray<NSString *> *SGLyricsOrder(void) {
-    id stored = [NSUserDefaults.standardUserDefaults arrayForKey:SGKeyLyricsProviders];
+    id stored = [NSUserDefaults.standardUserDefaults objectForKey:SGKeyLyricsProviders];
     NSArray *keys = [stored isKindOfClass:NSArray.class] ? stored : fromLegacyKeys();
+    if (![stored isKindOfClass:NSArray.class] && !keys.count) {
+        NSMutableArray<NSString *> *defaults = [NSMutableArray array];
+        for (SGLyricsProvider *provider in SGLyricsAllProviders()) [defaults addObject:provider.key];
+        keys = defaults;
+    }
     NSMutableArray<NSString *> *order = [NSMutableArray array];
     for (id key in keys) {
         if ([key isKindOfClass:NSString.class] && SGLyricsProviderFor(key) && ![order containsObject:key]) [order addObject:key];
