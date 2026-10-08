@@ -17,7 +17,7 @@
 <p align="center">
   <a href="#build-it">Build it</a> ·
   <a href="docs/tweaks.md">Hack on it</a> ·
-  <a href="releases">Install it</a>
+  <a href="https://github.com/samj-exe/taurus/releases">Install it</a>
 </p>
 
 <p align="center">
