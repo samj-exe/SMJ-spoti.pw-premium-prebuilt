@@ -4,7 +4,7 @@
 
 <h1 align="center">taurus.</h1>
 
-<p align="center">FOSS fork of chroma.pw</p>
+<p align="center">Open-Sourced fork of chroma.pw with built-in Spotify Premium. </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white" alt="iOS">
