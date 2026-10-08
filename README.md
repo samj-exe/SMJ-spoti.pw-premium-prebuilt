@@ -16,7 +16,8 @@
 
 <p align="center">
   <a href="#build-it">Build it</a> ·
-  <a href="docs/tweaks.md">Hack on it</a>
+  <a href="docs/tweaks.md">Hack on it</a> ·
+  <a href="releases">Install it</a>
 </p>
 
 <p align="center">
@@ -28,7 +29,7 @@
   <img src="docs/screenshots/home.webp" width="16%" alt="Home">
 </p>
 
-This project is made by me and it is a fork of chroma.pw before it was closed source - updated with the newest features. Below is the original projects readme:
+Taurus: the free, open-sourced liquid glass spotify tweak - made my me. <3
 
 A no-jailbreak Theos tweak that rebuilds Spotify for iOS in Liquid Glass, injected into your own
 decrypted IPA and signed with your own certificate.
