@@ -189,13 +189,14 @@ void SGRPlayerForceLandscapeLyrics(void) {
 @end
 
 @implementation SGRLandscapeLyricsController {
+    SGRArtworkField *_field;
     UIImageView *_cover;
     UILabel *_titleLabel, *_artistLabel, *_elapsedLabel, *_durationLabel;
     UIView *_lyricHost;
     UISlider *_progress;
     UIButton *_play, *_previous, *_next, *_close;
     SGRKaraokeView *_lyrics;
-    NSTimer *_stateTimer, *_controlsTimer;
+    NSTimer *_stateTimer;
     NSString *_shownArtwork;
 }
 
@@ -212,9 +213,8 @@ void SGRPlayerForceLandscapeLyrics(void) {
     UIImageSymbolConfiguration *configuration = [UIImageSymbolConfiguration configurationWithPointSize:size weight:UIImageSymbolWeightMedium];
     [button setImage:[UIImage systemImageNamed:symbol withConfiguration:configuration] forState:UIControlStateNormal];
     button.tintColor = UIColor.whiteColor;
+    button.backgroundColor = UIColor.clearColor;
     button.accessibilityLabel = label;
-    button.backgroundColor = [UIColor colorWithWhite:1 alpha:0.08];
-    button.layer.cornerRadius = size > 30 ? 30 : 22;
     [button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(interacted) forControlEvents:UIControlEventTouchDown];
     return button;
@@ -224,6 +224,14 @@ void SGRPlayerForceLandscapeLyrics(void) {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.blackColor;
     self.view.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+
+    _field = [[SGRArtworkField alloc] initWithFrame:self.view.bounds];
+    _field.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _field.showsBackdrop = YES;
+    _field.flows = SGEnabled(SGRKeyPlayerMotion);
+    _field.motionHeld = SGPlayerState().isPaused;
+    [_field setProvisionalColor:SGRPlayerField().fieldColor];
+    [self.view addSubview:_field];
 
     _cover = [UIImageView new];
     _cover.contentMode = UIViewContentModeScaleAspectFill;
@@ -264,7 +272,6 @@ void SGRPlayerForceLandscapeLyrics(void) {
         [self.view addSubview:button];
     }
     _close = [self button:@"xmark" label:@"Close landscape lyrics" size:18 action:@selector(closeLyrics)];
-    _close.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
     [self.view addSubview:_close];
 
     _lyricHost = [UIView new];
@@ -279,7 +286,6 @@ void SGRPlayerForceLandscapeLyrics(void) {
     _cover.userInteractionEnabled = YES;
     [self refresh];
     _stateTimer = [NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
-    [self scheduleControlsHide];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
@@ -294,6 +300,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    _field.frame = self.view.bounds;
     CGRect safe = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     if (safe.size.width <= safe.size.height) return;
     CGFloat gap = 24, leftWidth = floor((safe.size.width - gap) * 0.4);
@@ -323,6 +330,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
     _next.frame = CGRectMake(controlsX + (buttonSide + buttonGap) * 2, controlsY, buttonSide, buttonSide);
     _lyricHost.frame = CGRectMake(rightX, CGRectGetMinY(safe) + 12, rightWidth, safe.size.height - 24);
     _lyrics.frame = _lyricHost.bounds;
+    [_lyrics setLineInsets:UIEdgeInsetsZero duration:0];
     _close.frame = CGRectMake(CGRectGetMaxX(safe) - 42, CGRectGetMinY(safe) + 2, 40, 40);
     [self.view bringSubviewToFront:_close];
 }
@@ -338,8 +346,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [_stateTimer invalidate];
-    [_controlsTimer invalidate];
-    _stateTimer = _controlsTimer = nil;
+    _stateTimer = nil;
     if (sg_host) {
         SGRPlayerLyricsOverlay *overlay = objc_getAssociatedObject(sg_host, &kOverlayKey);
         if (overlay && _lyrics.superview != overlay.stage) [overlay.stage addSubview:_lyrics];
@@ -351,6 +358,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
 - (void)refresh {
     SPTPlayerState *state = SGPlayerState();
     if (!state) return;
+    _field.motionHeld = state.isPaused;
     _titleLabel.text = state.track.trackTitle ?: @"";
     _artistLabel.text = state.track.artistName ?: @"";
     _durationLabel.text = [self timeText:state.duration];
@@ -365,6 +373,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
     if (artwork && ![_shownArtwork isEqualToString:identity]) {
         _shownArtwork = [identity copy];
         _cover.image = artwork;
+        [_field setArtwork:artwork identity:identity animated:YES];
     }
     if (state.isPaused) [self showControls:YES];
 }
@@ -376,13 +385,6 @@ void SGRPlayerForceLandscapeLyrics(void) {
 
 - (void)interacted {
     [self showControls:YES];
-    [self scheduleControlsHide];
-}
-
-- (void)scheduleControlsHide {
-    [_controlsTimer invalidate];
-    if (SGPlayerState().isPaused) return;
-    _controlsTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(hideControls) userInfo:nil repeats:NO];
 }
 
 - (void)showControls:(BOOL)show {
@@ -395,8 +397,6 @@ void SGRPlayerForceLandscapeLyrics(void) {
     for (UIView *view in @[_previous, _play, _next]) view.alpha = alpha;
     if (_close) _close.alpha = 1;
 }
-
-- (void)hideControls { [UIView animateWithDuration:0.25 animations:^{ [self showControls:NO]; }]; }
 
 - (void)playPause {
     id player = SGKaraokePlayer();
