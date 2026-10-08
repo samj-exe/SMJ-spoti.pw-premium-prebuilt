@@ -210,6 +210,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
     SGRKaraokeView *_lyrics;
     NSTimer *_stateTimer;
     NSString *_shownArtwork;
+    BOOL _previousIdleTimerDisabled, _holdsIdleTimer;
 }
 
 - (instancetype)initWithLyrics:(SGRKaraokeView *)lyrics {
@@ -311,6 +312,14 @@ void SGRPlayerForceLandscapeLyrics(void) {
     return UIInterfaceOrientationLandscapeRight;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (_holdsIdleTimer) return;
+    _previousIdleTimerDisabled = UIApplication.sharedApplication.idleTimerDisabled;
+    _holdsIdleTimer = YES;
+    UIApplication.sharedApplication.idleTimerDisabled = YES;
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     _field.frame = self.view.bounds;
@@ -352,12 +361,16 @@ void SGRPlayerForceLandscapeLyrics(void) {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     if (size.width >= size.height) return;
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        if (self.presentingViewController) [self dismissViewControllerAnimated:NO completion:nil];
+        dismissLandscapeLyrics();
     }];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    if (_holdsIdleTimer) {
+        UIApplication.sharedApplication.idleTimerDisabled = _previousIdleTimerDisabled;
+        _holdsIdleTimer = NO;
+    }
     [_stateTimer invalidate];
     _stateTimer = nil;
     if (sg_host) {
@@ -446,8 +459,15 @@ static void showLandscapeLyrics(UIViewController *player) {
 
 static void dismissLandscapeLyrics(void) {
     SGRLandscapeLyricsController *controller = sg_landscapeLyrics;
-    if (controller.presentingViewController) [controller dismissViewControllerAnimated:NO completion:nil];
-    sg_landscapeLyrics = nil;
+    if (!controller) return;
+    if (!controller.presentingViewController) {
+        if (sg_landscapeLyrics == controller) sg_landscapeLyrics = nil;
+        return;
+    }
+    if (controller.isBeingDismissed) return;
+    [controller dismissViewControllerAnimated:NO completion:^{
+        if (sg_landscapeLyrics == controller) sg_landscapeLyrics = nil;
+    }];
 }
 
 @implementation SGRPlayerLyricsOverlay {

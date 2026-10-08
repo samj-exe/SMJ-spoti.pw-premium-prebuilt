@@ -14,7 +14,6 @@
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;
 @property (nonatomic, copy) NSString *symbol;
-@property (nonatomic, copy) NSString *key;              // a switch row, on until it is switched off
 @property (nonatomic, copy) NSString *(^value)(void);   // read out on the right, again once a second
 @property (nonatomic, copy) void (^action)(void);
 @end
@@ -138,12 +137,6 @@ static NSArray<SGUpdateRelease *> *releasesToShow(void) {
     [top addObject:linkRow(@"All releases", @"Every version, this one and the ones before it",
                            @"clock.arrow.circlepath", [SGRepoURL stringByAppendingString:@"/releases"])];
     [groups addObject:group(nil, top)];
-
-    SGUpdateRow *notice = [SGUpdateRow new];
-    notice.title = @"Auto check updates";
-    notice.symbol = @"bell";
-    notice.key = SGKeyUpdateNotice;
-    [groups addObject:group(nil, @[notice])];
 
     for (SGUpdateRelease *release in releasesToShow()) {
         NSMutableArray<NSString *> *kinds = [NSMutableArray array];
@@ -276,14 +269,7 @@ static NSArray<SGUpdateRelease *> *releasesToShow(void) {
         cell.contentConfiguration = content;
     }
     cell.separatorInset = UIEdgeInsetsMake(0, row.symbol ? 58 : 16, 0, 0);
-    if (row.key) {
-        UISwitch *toggle = [UISwitch new];
-        toggle.onTintColor = SGGreen();
-        toggle.on = SGEnabled(row.key);
-        toggle.accessibilityLabel = row.title;
-        [toggle addTarget:self action:@selector(toggled:) forControlEvents:UIControlEventValueChanged];
-        cell.accessoryView = toggle;
-    } else if (row.value) {
+    if (row.value) {
         UILabel *label = [UILabel new];
         label.font = SGTitleFont();
         label.textColor = SGGrey();
@@ -294,14 +280,6 @@ static NSArray<SGUpdateRelease *> *releasesToShow(void) {
     cell.selectionStyle = row.action ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
     cell.accessibilityTraits = row.action ? UIAccessibilityTraitButton : UIAccessibilityTraitStaticText;
     return cell;
-}
-
-// The switch is read by the cell it sits in, since a rebuilt page moves the rows under it.
-- (void)toggled:(UISwitch *)toggle {
-    UIView *view = toggle;
-    while (view && ![view isKindOfClass:UITableViewCell.class]) view = view.superview;
-    SGUpdateRow *row = [self rowAt:[self.tableView indexPathForCell:(UITableViewCell *)view]];
-    if (row.key) SGSetEnabled(row.key, toggle.on);
 }
 
 - (BOOL)tableView:(UITableView *)table shouldHighlightRowAtIndexPath:(NSIndexPath *)path {

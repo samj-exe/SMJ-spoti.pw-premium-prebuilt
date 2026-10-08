@@ -41,14 +41,6 @@ NSData *SGUsageBody(void);
 BOOL SGUsageOwed(void);        // on, and not yet sent this UTC day
 void SGUsageNoteAsked(void);
 
-// UpdateNotice.m: the sheet a release newer than this build brings on its own, a few seconds after
-// Spotify comes up, once per release. Watched from the settings %ctor; the switch is on the Updates
-// page and takes effect at once.
-#define SGKeyUpdateNotice @"spotifyglass.update.notice"
-void SGWatchForUpdates(void);
-BOOL SGUpdateNoticeShown(void);   // this run, so the donate sheet stays out of its way
-
-
 // Whether the now playing card on the lock screen can open this build. It depends on the signature,
 // not on the mod: iOS launches by the App ID of the application-identifier entitlement, so a build
 // whose bundle id is not that App ID cannot be opened from the card. Signing.m says so once.

@@ -19,7 +19,7 @@
 #import "Redesigned/Player/Player.h"
 #import "Redesigned/Kit/SGRAccent.h"
 
-NSString *const SGRedesignedUIInfo = @"The newest version of spoti.pw, leaning towards Apple Music's style. It is not compatible with the legacy look's settings.\n\nThe legacy look gives you more freedom, yet still looks like Spotify.";
+NSString *const SGRedesignedUIInfo = @"Taurus's redesigned look, leaning towards Apple Music's style. It is not compatible with the legacy look's settings.\n\nThe legacy look gives you more freedom, yet still looks like Spotify.";
 
 void SGSetRedesignedUI(BOOL on) {
     SGSetEnabled(SGKeyRedesign, on);

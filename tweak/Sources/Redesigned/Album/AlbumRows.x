@@ -19,7 +19,7 @@
 
 // Under the text rather than the whole row, as the Music app draws it; the trailing end clears the page
 // margin.
-static const CGFloat kHairline = 0.5, kCompactTrackRowHeight = 44;
+static const CGFloat kHairline = 0.5;
 
 static char kRowKey, kSubtitleKey, kLineKey, kAlbumHeaderKey, kAlbumParentKey, kAlbumArtistsKey;
 static char kOriginalSubtitleKey, kAppliedSubtitleKey;
@@ -108,27 +108,6 @@ static void applyExplicitTagFilter(UIView *row, BOOL hide) {
     });
 }
 
-static BOOL hasVisibleTrackMetadata(UIView *row, UIView *page) {
-    applyExplicitTagFilter(row, SGHidden(SGRKeyHideExplicitAlbumTags));
-
-    UIView *subtitle = SGRFindByIdentifier(row, @"EncoreConsumerMobile.View.Granular.Subtitle", &kSubtitleKey);
-    BOOL hideAll = SGHidden(SGRKeyHideAllAlbumArtists);
-    NSSet<NSString *> *artistsToHide = SGHidden(SGRKeyHideAlbumArtists) ? albumArtists(page) : [NSSet set];
-    __block BOOL hasMetadata = NO;
-    SGForEachView(subtitle, ^(UIView *view) {
-        if (![view isKindOfClass:UILabel.class]) return;
-        UILabel *label = (UILabel *)view;
-        applyArtistFilter(label, artistsToHide, hideAll);
-        hasMetadata = hasMetadata || label.text.length > 0;
-    });
-    if (hasMetadata) return YES;
-
-    SGForEachView(row, ^(UIView *view) {
-        if (explicitMarker(view) && !view.hidden && view.alpha > 0.01) hasMetadata = YES;
-    });
-    return hasMetadata;
-}
-
 static void clearSurface(UIView *view) {
     UIColor *color = view.backgroundColor;
     if (color && SGIsBaseSurface(color.CGColor)) view.backgroundColor = UIColor.clearColor;
@@ -197,20 +176,6 @@ static BOOL isTrackContent(UIView *content) {
 }
 
 %hook _TtC12Element_List18CollectionViewCell
-- (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)attributes {
-    UICollectionViewCell *cell = (UICollectionViewCell *)self;
-    UIView *content = cell.contentView.subviews.firstObject;
-    if (!isTrackContent(content)) return %orig;
-
-    UICollectionViewLayoutAttributes *result = %orig;
-    UIView *page = SGRAlbumPageOf(cell);
-    UIView *row = SGRFindByIdentifier(cell, @"Components.UI.RetrievalRow*", &kRowKey);
-    if (page && row && !hasVisibleTrackMetadata(row, page)) {
-        result.size = CGSizeMake(result.size.width, MIN(result.size.height, kCompactTrackRowHeight));
-    }
-    return result;
-}
-
 - (void)layoutSubviews {
     %orig;
     UICollectionViewCell *cell = (UICollectionViewCell *)self;

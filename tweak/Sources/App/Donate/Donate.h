@@ -1,9 +1,6 @@
-// Donate: Ko-fi, asked for from the Mod Settings row, a sheet after the first welcome tour (after its
-// restart when the look changed), then two days on and every fourteen after that.
+// Optional, user-initiated Ko-fi support from the Mod Settings page.
 #import <UIKit/UIKit.h>
 #import "Settings/SGModPage.h"
-
-#define SGKeySupportLinks @"spotifyglass.supportLinks"
 
 extern NSString *const SGKofiURL;
 UIColor *SGKofiColor(void);
@@ -15,8 +12,3 @@ UIColor *SGKofiColor(void);
 
 void SGShowDonateSheet(void);
 SGModRow *SGDonateRow(void);
-void SGWatchForDonate(void);
-// A tour is done: the sheet follows it, or follows Home after the restart.
-void SGDonateAfterTour(BOOL restarting);
-BOOL SGDonateAfterTourPending(void);
-void SGOfferDonate(void);

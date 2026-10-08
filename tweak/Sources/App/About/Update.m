@@ -3,8 +3,8 @@
 // release body is the changelog itself: a "### Features" or "### Fixes" heading over a line per
 // commit, each ending in a link to it. One request brings the last twenty releases rather than only
 // the newest, which is what lets the Updates page show every version between this build and the
-// newest one. Asked a few seconds after Spotify comes up (UpdateNotice.m) and when Mod Settings
-// opens, at most once every six hours either way, and on demand from the page. spoti.pw is asked
+// newest one. Checked when the Updates page opens, at most once every six hours, and on demand from
+// its Check now action. The legacy spoti.pw service is asked
 // first and hands on GitHub's list; the request carries Usage.m's body. GitHub itself is the fallback.
 #import "Core/SGCore.h"
 #import "About.h"
