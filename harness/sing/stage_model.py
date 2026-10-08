@@ -52,9 +52,9 @@ tags:
 - coreml
 ---
 
-# spoti.pw Sing voice model
+# Taurus Sing voice model
 
-The vocal separator [spoti.pw](https://spoti.pw)'s Sing runs on the iPhone to turn a song's vocals down
+The vocal separator [Taurus](https://github.com/samj-exe/taurus)'s Sing runs on the iPhone to turn a song's vocals down
 while it plays. It is Mel-Band RoFormer with KimberleyJensen's vocal checkpoint, its spectral core
 exported for Core ML with two-second windows: a float32 `spectrum` of shape `[1, 2050, 201, 2]` in, the
 `vocals_spectrum` of the same shape out, the STFT around it done by the app. Normalization, attention,

@@ -16,8 +16,7 @@
 
 <p align="center">
   <a href="#build-it">Build it</a> ·
-  <a href="docs/tweaks.md">Hack on it</a> ·
-  <a href="https://ko-fi.com/darkksh">Support</a>
+  <a href="docs/tweaks.md">Hack on it</a>
 </p>
 
 <p align="center">
@@ -51,7 +50,7 @@ in Settings → Mod Settings.
 
 No IPA is distributed. Bring a decrypted **Spotify 9.1.78** IPA; you get an unsigned
 `Taurus-<mod version>.ipa` to sign with SideStore, Feather or any certificate signer. Each
-[release](https://github.com/skopevoj/spoti.pw/releases) also carries the tweak's `.deb`.
+[release](https://github.com/samj-exe/taurus/releases) also carries the tweak's `.deb`.
 
 ### Build with GitHub Actions
 
@@ -86,14 +85,6 @@ SideStore and Sideloadly get this right on their own.
 
 The app keeps Spotify's bundle id, so it installs over the real Spotify.
 
-## Support
-
-If it made your phone nicer to use, a coffee is a good way to say so.
-
-<a href="https://ko-fi.com/darkksh">
-  <img src="https://img.shields.io/badge/Ko--fi-Buy_me_a_coffee-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Support on Ko-fi">
-</a>
-
 ## Contributing
 
 Pull requests are welcome. The pull request's description has a box for agreeing to the
@@ -102,10 +93,10 @@ contribution; it is ticked once, before the first pull request is merged.
 
 ## Star history
 
-<a href="https://star-history.com/#skopevoj/spoti.pw&Date">
+<a href="https://star-history.com/#samj-exe/taurus&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=skopevoj/spoti.pw&type=Date&theme=dark">
-    <img src="https://api.star-history.com/svg?repos=skopevoj/spoti.pw&type=Date" alt="Star history chart">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=samj-exe/taurus&type=Date&theme=dark">
+    <img src="https://api.star-history.com/svg?repos=samj-exe/taurus&type=Date" alt="Star history chart">
   </picture>
 </a>
 

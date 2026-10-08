@@ -26,7 +26,6 @@
 #import "Shared/AudioEffects/AudioEffectsPage.h"
 #import "Shared/LiveActivity/LiveActivity.h"
 #import "App/About/About.h"
-#import "App/Donate/Donate.h"
 #import "Pages.h"
 
 static const CGFloat kRowHeight = 56;
@@ -36,15 +35,99 @@ static SGModRow *pageRow(NSString *title, NSString *symbol, UIViewController *(^
     return SGWithSymbol(SGPageRow(title, page), symbol);
 }
 
+@interface SGTaurusSettingsPage : SGModPage
+- (instancetype)initWithSections:(NSArray<SGModSection *> *)sections;
+@end
+
+@implementation SGTaurusSettingsPage {
+    UIView *_masthead;
+    UILabel *_mastheadTitle, *_mastheadByline, *_compactTitle;
+    BOOL _compactTitleVisible;
+}
+
+- (instancetype)initWithSections:(NSArray<SGModSection *> *)sections {
+    return [super initWithTitle:@"taurus" intro:nil sections:sections footer:nil];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    _masthead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 132)];
+    _mastheadTitle = [UILabel new];
+    _mastheadTitle.text = @"taurus";
+    _mastheadTitle.font = [UIFont systemFontOfSize:36 weight:UIFontWeightBold];
+    _mastheadTitle.textColor = UIColor.whiteColor;
+    _mastheadTitle.textAlignment = NSTextAlignmentRight;
+    _mastheadByline = [UILabel new];
+    _mastheadByline.text = @"by samj.";
+    _mastheadByline.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    _mastheadByline.textColor = SGGrey();
+    _mastheadByline.textAlignment = NSTextAlignmentRight;
+    [_masthead addSubview:_mastheadTitle];
+    [_masthead addSubview:_mastheadByline];
+    self.tableView.tableHeaderView = _masthead;
+
+    _compactTitle = [UILabel new];
+    _compactTitle.text = @"taurus";
+    _compactTitle.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+    _compactTitle.textColor = UIColor.whiteColor;
+    [_compactTitle sizeToFit];
+    _compactTitle.alpha = 0;
+    _compactTitle.isAccessibilityElement = YES;
+    _compactTitle.accessibilityElementsHidden = YES;
+    self.navigationItem.titleView = _compactTitle;
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    CGFloat width = self.tableView.bounds.size.width;
+    if (_masthead.bounds.size.width != width) {
+        _masthead.frame = CGRectMake(0, 0, width, 132);
+        _mastheadTitle.frame = CGRectMake(16, 24, width - 32, 48);
+        _mastheadByline.frame = CGRectMake(16, 72, width - 32, 24);
+        self.tableView.tableHeaderView = _masthead;
+    }
+    [self updateCompactTitleForScrollView:self.tableView];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self updateCompactTitleForScrollView:scrollView];
+}
+
+- (void)updateCompactTitleForScrollView:(UIScrollView *)scrollView {
+    CGFloat scrolled = scrollView.contentOffset.y + scrollView.adjustedContentInset.top;
+    BOOL show = scrolled >= CGRectGetHeight(_masthead.bounds);
+    if (show == _compactTitleVisible) return;
+    _compactTitleVisible = show;
+    if (show) {
+        _compactTitle.accessibilityElementsHidden = NO;
+        [UIView animateWithDuration:0.18 animations:^{ self->_compactTitle.alpha = 1; }];
+    } else {
+        _compactTitle.accessibilityElementsHidden = YES;
+        [UIView animateWithDuration:0.18 animations:^{ self->_compactTitle.alpha = 0; }];
+    }
+}
+
+@end
+
 static UIViewController *modSettingsPage(void) {
     // Opening the page is the only thing that asks; the cache keeps it to once every six hours.
-    SGCheckForUpdate(NO);
+    SGCheckForUpdate();
     NSMutableArray<SGModSection *> *sections = [NSMutableArray array];
     // A build the lock screen cannot open leads the page, above the tweaks: it is the one thing here
     // that no switch can put right, and it is worth reading before anything else.
     SGModRow *signing = SGSigningWarningRow();
-    if (signing) [sections addObject:SGSection(nil, @[signing])];
-    [sections addObject:SGSection(@"Support", @[SGDonateRow()])];
+    NSMutableArray<SGModRow *> *topRows = [NSMutableArray array];
+    SGModRow *update = SGActionRow(@"Taurus update available", @"Tap to view the latest release", ^{
+        NSString *url = SGUpdateNewestRelease().url;
+        if (url.length) SGOpenURL(url);
+    });
+    update.symbol = @"arrow.down.circle.fill";
+    update.color = SGGreen();
+    update.visible = ^BOOL { return SGUpdateVersion() != nil; };
+    update.refreshOn = SGUpdateCheckedNotification;
+    [topRows addObject:update];
+    if (signing) [topRows addObject:signing];
+    [sections addObject:SGSection(nil, topRows)];
     SGModRow *mod = pageRow(@"Mod", @"info.circle", ^UIViewController *{ return SGAboutPage(); });
     mod.value = ^NSString *{ return @(SG_VERSION); };
     // The audio effects work on the sound, so both looks have them, with what they are doing beside the chevron.
@@ -84,7 +167,7 @@ static UIViewController *modSettingsPage(void) {
             mod,
         ]),
     ]];
-    return [[SGModPage alloc] initWithTitle:@"Taurus" intro:nil sections:sections footer:nil];
+    return [[SGTaurusSettingsPage alloc] initWithSections:sections];
 }
 
 #pragma mark - row in the settings list and the side drawer
