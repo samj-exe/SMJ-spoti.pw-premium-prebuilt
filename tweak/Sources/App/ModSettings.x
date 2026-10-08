@@ -52,6 +52,8 @@ static SGModRow *pageRow(NSString *title, NSString *symbol, UIViewController *(^
 - (void)viewDidLoad {
     [super viewDidLoad];
     _masthead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 132)];
+    _masthead.backgroundColor = SGPageBackground();
+    _masthead.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     _mastheadTitle = [UILabel new];
     _mastheadTitle.text = @"taurus";
     _mastheadTitle.font = [UIFont systemFontOfSize:36 weight:UIFontWeightBold];
@@ -60,7 +62,7 @@ static SGModRow *pageRow(NSString *title, NSString *symbol, UIViewController *(^
     _mastheadByline = [UILabel new];
     _mastheadByline.text = @"by samj.";
     _mastheadByline.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
-    _mastheadByline.textColor = SGGrey();
+    _mastheadByline.textColor = [UIColor colorWithWhite:1 alpha:0.72];
     _mastheadByline.textAlignment = NSTextAlignmentRight;
     [_masthead addSubview:_mastheadTitle];
     [_masthead addSubview:_mastheadByline];
@@ -80,11 +82,15 @@ static SGModRow *pageRow(NSString *title, NSString *symbol, UIViewController *(^
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGFloat width = self.tableView.bounds.size.width;
-    if (_masthead.bounds.size.width != width) {
+    if (width > 0) {
+        BOOL sizeChanged = _masthead.bounds.size.width != width || _masthead.bounds.size.height != 132;
         _masthead.frame = CGRectMake(0, 0, width, 132);
-        _mastheadTitle.frame = CGRectMake(16, 24, width - 32, 48);
-        _mastheadByline.frame = CGRectMake(16, 72, width - 32, 24);
-        self.tableView.tableHeaderView = _masthead;
+        if (sizeChanged || self.tableView.tableHeaderView != _masthead) self.tableView.tableHeaderView = _masthead;
+        _masthead.backgroundColor = UIColor.blackColor;
+        _mastheadTitle.textColor = UIColor.whiteColor;
+        _mastheadByline.textColor = UIColor.whiteColor;
+        _mastheadTitle.frame = CGRectMake(16, 24, MAX(0, width - 32), 48);
+        _mastheadByline.frame = CGRectMake(16, 72, MAX(0, width - 32), 24);
     }
     [self updateCompactTitleForScrollView:self.tableView];
 }
