@@ -16,7 +16,7 @@
 <p align="center">
   <a href="#build-it">Build it</a> ·
   <a href="docs/tweaks.md">Hack on it</a> ·
-  <a href="https://github.com/samj-exe/taurus/releases">Install it</a>
+  <a href="#install-it">Install it</a>
 </p>
 
 <p align="center">
@@ -46,19 +46,24 @@ The redesign is `UIGlassEffect`, which only exists from iOS 26. Below that the R
 is greyed out and the mod runs Spotify's own screens with everything else it adds on top. Both live
 in Settings → Mod Settings.
 
+## Install it
+
+Each
+[release](https://github.com/samj-exe/taurus/releases) carries the tweak's `.ipa`, install this `.ipa` file with any sideloader, such as SideStore or Feather. You do not need to build to project if you do not wish to.
+
 ## Build it
 
-No IPA is distributed. Bring a decrypted **Spotify 9.1.78** IPA; you get an unsigned
+Bring a decrypted **Spotify 9.1.78** IPA; you get an unsigned
 `Taurus-<mod version>.ipa` to sign with SideStore, Feather or any certificate signer. Each
 [release](https://github.com/samj-exe/taurus/releases) also carries the tweak's `.deb`.
 
-### Build with GitHub Actions
+#### Build with GitHub Actions (recommended)
 
 Fork the repo, enable Actions, run **Build IPA from your own Spotify IPA**. It takes a direct link to
 your decrypted `.ipa` and hands the built IPA back as a workflow artifact. No Mac needed; the link is
 masked in the log and the result stays in your fork.
 
-### Build on a Mac
+#### Build on a Mac
 
 Theos in `~/theos` and Xcode with an iPhoneOS 26+ SDK (`xcode-select` it). An SDK in `~/theos/sdks`
 alone builds too, but without the Live Activity. Then:
