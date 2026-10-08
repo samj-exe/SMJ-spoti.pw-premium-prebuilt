@@ -147,10 +147,22 @@ static void requestLandscapeGeometry(BOOL landscape) {
     }
 }
 
+static void refreshOrientationPolicy(void) {
+    if (@available(iOS 16.0, *)) {
+        [sg_player setNeedsUpdateOfSupportedInterfaceOrientations];
+        for (UIScene *candidate in UIApplication.sharedApplication.connectedScenes) {
+            if (![candidate isKindOfClass:UIWindowScene.class]) continue;
+            UIWindowScene *scene = (UIWindowScene *)candidate;
+            [scene.keyWindow.rootViewController setNeedsUpdateOfSupportedInterfaceOrientations];
+        }
+    }
+}
+
 void SGRPlayerLyricsOrientationChanged(void) {
     dispatch_async(dispatch_get_main_queue(), ^{
         installOrientationPolicy(UIApplication.sharedApplication.delegate);
         BOOL enabled = landscapeLyricsEnabled();
+        refreshOrientationPolicy();
         UIDeviceOrientation device = UIDevice.currentDevice.orientation;
         BOOL deviceLandscape = device == UIDeviceOrientationLandscapeLeft || device == UIDeviceOrientationLandscapeRight;
         for (UIScene *candidate in UIApplication.sharedApplication.connectedScenes) {
@@ -262,6 +274,7 @@ void SGRPlayerForceLandscapeLyrics(void) {
     _progress = [UISlider new];
     _progress.minimumTrackTintColor = UIColor.whiteColor;
     _progress.maximumTrackTintColor = [UIColor colorWithWhite:1 alpha:0.22];
+    _progress.thumbTintColor = UIColor.clearColor;
     [_progress addTarget:self action:@selector(seek) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
     [self.view addSubview:_progress];
 
@@ -936,6 +949,16 @@ static void replace(void) {
 #pragma mark - the units
 
 %hook _TtC19NowPlaying_ViewImpl24NowPlayingViewController
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if (landscapeLyricsEnabled()) return UIInterfaceOrientationMaskAllButUpsideDown;
+    return %orig;
+}
+
+- (BOOL)shouldAutorotate {
+    if (landscapeLyricsEnabled()) return YES;
+    return %orig;
+}
+
 - (void)viewDidLayoutSubviews {
     %orig;
     UIView *host = ((UIViewController *)self).viewIfLoaded;
