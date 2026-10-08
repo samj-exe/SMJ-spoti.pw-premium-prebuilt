@@ -424,7 +424,6 @@ static char kCardGlassKey;
 #pragma mark - entry
 
 static __weak SGDonateController *sg_sheet;
-static BOOL sg_offered;
 
 void SGShowDonateSheet(void) {
     UIViewController *top = SGTopController();
