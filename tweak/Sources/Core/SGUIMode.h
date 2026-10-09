@@ -1,22 +1,114 @@
-// Which of the two looks runs: Spotify's own screens with the mod's tweaks on them (Native/), or the
-// redesign (Redesigned/), picked by Redesigned UI in Appearance. What does not draw on Spotify's
-// screens (Shared/) runs under both. The switch is read once, the first time anything asks, so the
-// hooks, the flags and the pages see one answer for the whole launch and a change waits for the restart.
-//
-// Every hook file of Native/ starts its %ctor with `if (!SGNativeUI()) return;`, every one of
-// Redesigned/ with `if (!SGRedesignedUI()) return;`: the two never run together, which is what lets
-// each hook the same Spotify class in its own way.
-// Threading: safe from any thread.
-#import <Foundation/Foundation.h>
+#import "Core/SGCore.h"
+#import "Settings/SGModPage.h"
+#import "Settings/SGPageStyle.h"
+#import "Pages.h"
+#import "Shared/ArtistBlock/ArtistBlock.h"
+#import "Shared/Gestures/Gestures.h"
+#import "Shared/Lyrics/Lyrics.h"
+#import "Shared/LyricsMeanings/Meanings.h"
+#import "Shared/Player/PlayerSettings.h"
+#import "Native/Appearance/Appearance.h"
+#import "Native/Navbar/Navbar.h"
+#import "Native/NowPlayingBar/NowPlayingBar.h"
+#import "Native/Player/NowPlaying.h"
+#import "Shared/Haptics/Haptics.h"
+#import "Shared/LiveActivity/LiveActivity.h"
+#import "Redesigned/Lyrics/LyricsText.h"
+#import "Redesigned/Navbar/Navbar.h"
+#import "Redesigned/NowPlayingBar/NowPlayingBar.h"
+#import "Redesigned/Player/Player.h"
+#import "Redesigned/Kit/SGRAccent.h"
 
-#define SGKeyRedesign @"spotifyglass.redesign"
+NSString *const SGRedesignedUIInfo = @"Taurus's redesigned look, leaning towards Apple Music's style. It is not compatible with the legacy look's settings.\n\nThe legacy look gives you more freedom with Spotify's own screens. On iOS 17–25 it uses the iOS 18-style blur treatment; on iOS 26+ it uses Liquid Glass.\n\nSwitch it on or off and restart Spotify to apply it.";
 
-// The redesign is available from iOS 17 onward. On iOS 26+ it uses the system Liquid Glass material,
-// and on iOS 17–25 it falls back to the iOS 18-style blur look, so the UI choice works across the range.
-BOOL SGRedesignAvailable(void);
+void SGSetRedesignedUI(BOOL on) {
+    SGSetEnabled(SGKeyRedesign, on);
+}
 
-BOOL SGRedesignedUI(void);
-BOOL SGNativeUI(void);
-// The stored switch rather than the launch's, for settings pages opened after it was flipped: they
-// show what the restart will bring.
-BOOL SGRedesignedUIStored(void);
+// The whole look changes hands at launch, so the switch asks for the restart straight away rather than
+// leaving Spotify half in the old look.
+static void offerRestart(BOOL on) {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Restart Spotify"
+        message:on ? @"The redesigned look takes over when Spotify starts again. Spotify closes now; open it again to see it." : @"Spotify's own look comes back when Spotify starts again. Spotify closes now; open it again to see it."
+        preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Later" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Restart now" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { SGRestartSpotify(); }]];
+    [SGTopController() presentViewController:alert animated:YES completion:nil];
+}
+
+// iOS 17+ can run the redesign. On 17–25 it uses the iOS 18 blur styling, and from 26 on it uses the
+// system Liquid Glass material. Below 17 the native look is the only option.
+static SGModRow *unavailableRow(void) {
+    SGModRow *row = SGStatActionRow(@"Redesigned UI", nil, ^NSString *{ return @"Needs iOS 17"; }, ^{
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Redesigned UI"
+            message:[NSString stringWithFormat:@"The redesigned look is available on iOS 17 and later. This phone runs iOS %@, so the mod gives you its native look.", UIDevice.currentDevice.systemVersion]
+            preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [SGTopController() presentViewController:alert animated:YES completion:nil];
+    });
+    return SGWithSymbol(row, @"sparkles");
+}
+
+SGModSection *SGAppearanceSection(void) {
+    if (!SGRedesignAvailable()) {
+        NSMutableArray<SGModRow *> *rows = [NSMutableArray arrayWithObject:unavailableRow()];
+        [rows addObjectsFromArray:SGNativeAppearanceRows()];
+        return SGNotedSection(@"Appearance", rows, @"Changes apply after you restart Spotify.");
+    }
+    SGModRow *redesign = SGOptionRow(@"Redesigned UI", nil, SGKeyRedesign);
+    redesign.glows = YES;
+    redesign.info = SGRedesignedUIInfo;
+    redesign.changed = ^(BOOL on) {
+        SGSetRedesignedUI(on);
+        offerRestart(on);
+    };
+    NSMutableArray<SGModRow *> *rows = [NSMutableArray arrayWithObject:SGWithSymbol(redesign, @"sparkles")];
+    [rows addObjectsFromArray:SGRedesignedUIStored() ? SGRAppearanceRows() : SGNativeAppearanceRows()];
+    return SGNotedSection(@"Appearance", rows, @"Changes apply after you restart Spotify.");
+}
+
+UIViewController *SGNavbarPage(void) {
+    return SGRedesignedUIStored() ? SGRNavbarSettingsPage() : SGNavbarSettingsPage();
+}
+
+// Pronunciation, translation, word sweeping and line meanings exist only in the redesign's lyrics.
+UIViewController *SGLyricsSettingsPage(void) {
+    BOOL redesigned = SGRedesignedUIStored();
+    NSMutableArray<SGModRow *> *more = [NSMutableArray arrayWithObject:SGLockScreenLyricsRow()];
+    if (!redesigned) [more insertObject:SGGlassLyricsRow() atIndex:0];
+    NSMutableArray<SGModSection *> *sections = [NSMutableArray arrayWithObject:SGLyricsSourcesSection(redesigned)];
+    if (redesigned) {
+        SGModRow *landscape = SGSwitchRow(@"Landscape lyrics", @"Show lyrics beside the player controls", SGRKeyLandscapeLyrics);
+        landscape.changed = ^(BOOL on) { SGRPlayerLyricsOrientationChanged(); };
+        [sections addObject:SGSection(@"Display", @[landscape, SGLyricsWordTimingRow(), SGRLyricsTextSizesRow(), SGLyricsTranslationLanguageRow(), SGRLyricsMeaningsRow()])];
+    }
+    [sections addObject:SGSection(nil, more)];
+    return [[SGModPage alloc] initWithTitle:@"Lyrics" intro:SGRestartNote sections:sections footer:nil];
+}
+
+UIViewController *SGPlayerSettingsPage(void) {
+    SGModRow *blocked = SGPageRow(@"Blocked artists", ^UIViewController *{ return SGArtistBlockSettingsPage(); });
+    blocked.value = ^NSString *{
+        return SGFlag(SGKeyArtistBlock, NO) ? @(SGBlockedArtists().count).stringValue : @"Off";
+    };
+    BOOL native = !SGRedesignedUIStored();
+
+    NSMutableArray<SGModSection *> *sections = [NSMutableArray arrayWithObject:SGSection(nil, @[
+        SGWithSymbol(SGPageRow(@"Gestures", ^UIViewController *{ return SGGesturesSettingsPage(); }), @"hand.tap"),
+        SGWithSymbol(blocked, @"person.crop.circle.badge.xmark"),
+    ])];
+    NSMutableArray<SGModRow *> *pages = [NSMutableArray array];
+    if (native) {
+        [pages addObject:SGWithSymbol(SGPageRow(@"Now playing bar", ^UIViewController *{ return SGNowPlayingBarSettingsPage(); }), @"rectangle.bottomthird.inset.filled")];
+        [pages addObject:SGWithSymbol(SGPageRow(@"Queue & devices", ^UIViewController *{ return SGQueueSettingsPage(); }), @"text.line.first.and.arrowtriangle.forward")];
+    } else {
+        [pages addObject:SGWithSymbol(SGPageRow(@"Now playing", ^UIViewController *{ return SGRNowPlayingBarSettingsPage(); }), @"rectangle.bottomthird.inset.filled")];
+    }
+    [pages addObject:SGWithSymbol(SGPageRow(@"Lock screen widget", ^UIViewController *{ return SGLockScreenWidgetPage(); }), @"lock")];
+    [sections addObject:SGSection(nil, pages)];
+    if (native) [sections addObjectsFromArray:SGNativePlayerScreenSections()];
+    // Vibrations hook Spotify's own controls and its audio, so they answer under either look.
+    [sections addObjectsFromArray:SGVibrationsSections()];
+
+    return [[SGModPage alloc] initWithTitle:@"Player" intro:SGRestartNote sections:sections footer:nil];
+}
