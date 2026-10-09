@@ -11,12 +11,8 @@
 
 #define SGKeyRedesign @"spotifyglass.redesign"
 
-// The redesign is Liquid Glass, and Liquid Glass is UIGlassEffect, which the system renders and which
-// no older OS can be given. Below iOS 26 the glass calls in Core/SGGlass.m and Redesigned/Kit/SGRGlass.m
-// fall back to a blur, so the redesign does not refuse to run, it runs untested against an older UIKit
-// and hangs its layout (issue #37, iOS 17: a scene-update watchdog). So it is offered only where its
-// material exists, and below that the native look is the whole mod. Everything this answers NO to
-// leaves the switch, the tour's card and the redesign's settings pages out, whatever is stored.
+// The redesign is available from iOS 17 onward. On iOS 26+ it uses the system Liquid Glass material,
+// and on iOS 17–25 it falls back to the iOS 18-style blur look, so the UI choice works across the range.
 BOOL SGRedesignAvailable(void);
 
 BOOL SGRedesignedUI(void);
