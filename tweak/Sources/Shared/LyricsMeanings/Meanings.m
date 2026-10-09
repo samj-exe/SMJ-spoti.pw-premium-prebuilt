@@ -14,13 +14,13 @@ static const double kLeastShared = 0.75;
 @end
 
 SGLyricsMeaningsLevel SGLyricsMeaningsShown(void) {
-    NSInteger level = SGInt(SGKeyLyricsMeanings, SGLyricsMeaningsOff);
+    NSInteger level = SGInt(SGKeyLyricsMeanings, SGLyricsMeaningsAll);
     return level >= SGLyricsMeaningsOff && level <= SGLyricsMeaningsAll ? level : SGLyricsMeaningsOff;
 }
 
 SGModRow *SGLyricsMeaningsRow(void) {
     SGModRow *row = SGChoiceRow(@"Line meanings", nil, SGKeyLyricsMeanings,
-                                @[@"Off", @"From the artist", @"Artist and editors", @"Everyone"], SGLyricsMeaningsOff);
+                                @[@"Off", @"From the artist", @"Artist and editors", @"Everyone"], SGLyricsMeaningsAll);
     row.choiceFooter = @"Explanations from Genius. Tap the bubble after a line, or hold the line.";
     return row;
 }

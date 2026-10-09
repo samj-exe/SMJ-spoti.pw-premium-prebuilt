@@ -334,10 +334,39 @@ static SGModSettingsRow *ensureDrawerRow(UICollectionView *list) {
     return row;
 }
 
+static UIColor *planBadgeColor(void) {
+    if (!SGRedesignedUI()) return SGGreen();
+    NSInteger rgb = SGInt(@"spotifyglass.redesign.accent", 0x37F200);
+    if (rgb < 0 || rgb > 0xFFFFFF) return SGGreen();
+    return [UIColor colorWithRed:((rgb >> 16) & 0xFF) / 255.0
+                           green:((rgb >> 8) & 0xFF) / 255.0
+                            blue:(rgb & 0xFF) / 255.0 alpha:1];
+}
+
+static void updatePlanBadge(UIView *root) {
+    UIColor *color = planBadgeColor();
+    CGFloat red = 0, green = 0, blue = 0, alpha = 0;
+    [color getRed:&red green:&green blue:&blue alpha:&alpha];
+    UIColor *textColor = (0.2126 * red + 0.7152 * green + 0.0722 * blue) > 0.55 ? UIColor.blackColor : UIColor.whiteColor;
+    SGForEachView(root, ^(UIView *view) {
+        if (![view isKindOfClass:UILabel.class]) return;
+        UILabel *label = (UILabel *)view;
+        if (![label.text isEqualToString:@"Spotify Free"] && ![label.text isEqualToString:@"Taurine"]) return;
+        label.text = @"Taurine";
+        label.textColor = textColor;
+        UIView *badge = label.superview;
+        badge.backgroundColor = color;
+        badge.layer.cornerRadius = CGRectGetHeight(badge.bounds) / 2;
+        badge.clipsToBounds = YES;
+    });
+}
+
 %hook _TtC23SideDrawer_ListPageImpl18ListViewController
 - (void)viewDidLayoutSubviews {
     %orig;
-    SGForEachView(((UIViewController *)self).view, ^(UIView *v) {
+    UIView *root = ((UIViewController *)self).view;
+    updatePlanBadge(root);
+    SGForEachView(root, ^(UIView *v) {
         if (![v isKindOfClass:UICollectionView.class] || ![NSStringFromClass(v.class) containsString:@"SideDrawerListCollectionView"]) return;
         ensureDrawerRow((UICollectionView *)v);
     });

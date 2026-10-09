@@ -24,5 +24,5 @@ BOOL SGNativeUI(void) {
 BOOL SGRedesignedUIStored(void) {
     // The stored switch is left alone rather than turned off: a phone updated to iOS 26 gets the
     // redesign it was last asked for back.
-    return SGRedesignAvailable() && SGFlag(SGKeyRedesign, NO);
+    return SGRedesignAvailable() && SGFlag(SGKeyRedesign, YES);
 }

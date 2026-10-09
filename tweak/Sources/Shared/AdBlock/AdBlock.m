@@ -47,9 +47,9 @@ static BOOL listed(NSString *key, NSString *const list[], size_t count) {
 }
 
 BOOL SGAdBlockForcesFlagOff(NSString *key) {
-    if (SGHidden(SGKeyHideAds) && listed(key, adFlags, sizeof(adFlags) / sizeof(adFlags[0]))) return YES;
-    if (SGHidden(SGKeyHideSearchVideos) && [key isEqualToString:@"ios-feature-search.video_carousel_section_enabled"]) return YES;
-    return SGHidden(SGKeyHideUpsells) && listed(key, upsellFlags, sizeof(upsellFlags) / sizeof(upsellFlags[0]));
+    if (SGFlag(SGKeyHideAds, YES) && listed(key, adFlags, sizeof(adFlags) / sizeof(adFlags[0]))) return YES;
+    if (SGFlag(SGKeyHideSearchVideos, YES) && [key isEqualToString:@"ios-feature-search.video_carousel_section_enabled"]) return YES;
+    return SGFlag(SGKeyHideUpsells, YES) && listed(key, upsellFlags, sizeof(upsellFlags) / sizeof(upsellFlags[0]));
 }
 
 // After an override from the All flags page, and locking the rows that would turn the same flag off.

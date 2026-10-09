@@ -8,7 +8,7 @@ NSString *const SGArtworkSourceApple = @"applemusic";
 
 NSArray<NSString *> *SGArtworkOrder(void) {
     id stored = [NSUserDefaults.standardUserDefaults arrayForKey:SGKeyLockScreenArtworkSources];
-    NSArray *keys = [stored isKindOfClass:NSArray.class] ? stored : @[SGArtworkSourceSpotify, SGArtworkSourceApple];
+    NSArray *keys = [stored isKindOfClass:NSArray.class] ? stored : @[SGArtworkSourceApple, SGArtworkSourceSpotify];
     NSMutableArray<NSString *> *order = [NSMutableArray array];
     for (id key in keys) {
         BOOL known = [key isEqual:SGArtworkSourceSpotify] || [key isEqual:SGArtworkSourceApple];

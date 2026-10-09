@@ -176,6 +176,18 @@ static BOOL isTrackContent(UIView *content) {
 }
 
 %hook _TtC12Element_List18CollectionViewCell
+- (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
+    UICollectionViewLayoutAttributes *attributes = %orig;
+    UICollectionViewCell *cell = (UICollectionViewCell *)self;
+    if (!isTrackContent(cell.contentView.subviews.firstObject)) return attributes;
+    UIView *page = SGRAlbumPageOf(cell);
+    if (!page) return attributes;
+    applyRow(cell, page);
+    [cell.contentView setNeedsLayout];
+    [cell.contentView layoutIfNeeded];
+    return %orig(attributes);
+}
+
 - (void)layoutSubviews {
     %orig;
     UICollectionViewCell *cell = (UICollectionViewCell *)self;

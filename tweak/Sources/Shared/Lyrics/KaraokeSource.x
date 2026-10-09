@@ -341,7 +341,7 @@ static SGKaraokeTrackWatcher *sg_trackWatcher;
 %ctor {
     // The sources that search by name learn the name from the player, so the player is caught
     // whenever one is on, not only for the redesign's lyrics and the lock screen.
-    if (!SGRedesignedUI() && !SGFlag(SGKeyLockScreenLyrics, NO) && !SGLyricsEnabled()) return;
+    if (!SGRedesignedUI() && !SGFlag(SGKeyLockScreenLyrics, YES) && !SGLyricsEnabled()) return;
     sg_seenTracks = [NSMutableDictionary dictionary];
     sg_lyrics = [NSMutableDictionary dictionary];
     sg_requested = [NSMutableSet set];

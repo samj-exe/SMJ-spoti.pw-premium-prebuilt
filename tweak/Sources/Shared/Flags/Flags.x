@@ -10,6 +10,15 @@ static id forced(NSString *key) {
     return SGForcedFlagValue(key);
 }
 
+static void seedFlagDefaultsOnce(void) {
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    NSString *seededKey = @"spotifyglass.flags.defaultOverridesSeeded";
+    if ([defaults boolForKey:SGKeyStock] || [defaults boolForKey:seededKey]) return;
+    if (!SGFlagOverride(@"ios-feature-localfiles.documents_enabled"))
+        SGSetFlagOverride(@"ios-feature-localfiles.documents_enabled", @1);
+    [defaults setBool:YES forKey:seededKey];
+}
+
 static BOOL boolFor(NSString *key, BOOL orig) {
     id value = forced(key);
     return value ? [value boolValue] : orig;
@@ -57,6 +66,7 @@ static id enumFor(NSString *key, id orig) {
 %end
 
 %ctor {
+    seedFlagDefaultsOnce();
     %init;
     SGRequireClasses(@[
         @"_TtC22RemoteConfigurationSDK25ConfigurationProviderImpl",

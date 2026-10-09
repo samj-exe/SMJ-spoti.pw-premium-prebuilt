@@ -51,6 +51,8 @@ in Settings → Mod Settings.
 Each
 [release](https://github.com/samj-exe/taurus/releases) carries the tweak's `.ipa`, install this `.ipa` file with any sideloader, such as SideStore or Feather. You do not need to build to project if you do not wish to.
 
+Add the release source to [SideStore or Feather](https://raw.githubusercontent.com/samj-exe/taurus/development/altstore-source.json), or add the [ESign source](https://raw.githubusercontent.com/samj-exe/taurus/development/esign-source.json) in ESign.
+
 ## Build it
 
 Bring a decrypted **Spotify 9.1.78** IPA; you get an unsigned
