@@ -113,4 +113,5 @@ chroma.pw/spoti.pw by darkk
 [FLEX](https://github.com/FLEXTool/FLEX), as hopeless's AutoFLEX build in `vendor/`, is the inspector
 the view trees are read through.
 
+All modified and distributed code from chroma.pw is licensed under GPL-3.0, no code under PolyForm Strict License 1.0.0 is distributed. 
 Not affiliated with Spotify.
