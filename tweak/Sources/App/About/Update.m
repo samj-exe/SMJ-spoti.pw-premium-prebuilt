@@ -5,9 +5,7 @@
 static NSString *const kGitHubURL = @"https://api.github.com/repos/samj-exe/taurus/releases?per_page=20";
 NSString *const SGUpdateCheckedNotification = @"spotifyglass.update.checked.notification";
 
-static NSString *const kChecked = @"spotifyglass.update.checked";
 static NSString *const kLatestRelease = @"spotifyglass.update.taurus.latest";
-static const NSTimeInterval kInterval = 6 * 60 * 60;
 
 static BOOL sg_running;
 
@@ -85,11 +83,8 @@ static void ask(NSString *url, void (^done)(NSDictionary *release, NSInteger sta
 }
 
 void SGCheckForUpdate(void) {
-    NSUserDefaults *store = NSUserDefaults.standardUserDefaults;
-    NSTimeInterval last = [store doubleForKey:kChecked];
     if (sg_running) return;
-    BOOL hasCache = [store dictionaryForKey:kLatestRelease] != nil;
-    if (hasCache && last > 0 && NSDate.date.timeIntervalSince1970 - last < kInterval) return;
+    NSUserDefaults *store = NSUserDefaults.standardUserDefaults;
 
     sg_running = YES;
     void (^finish)(NSDictionary *, NSInteger, NSError *) = ^(NSDictionary *release, NSInteger status, NSError *error) {
@@ -102,7 +97,6 @@ void SGCheckForUpdate(void) {
                       error.localizedDescription ?: @"no release in the reply");
             } else {
                 [store setObject:release forKey:kLatestRelease];
-                [store setDouble:NSDate.date.timeIntervalSince1970 forKey:kChecked];
                 SGLog(@"update check: the newest is %@, this build is %s", release[@"version"] ?: @"none", SG_VERSION);
             }
             [NSNotificationCenter.defaultCenter postNotificationName:SGUpdateCheckedNotification object:nil];
