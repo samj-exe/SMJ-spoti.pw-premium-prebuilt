@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "taurus",
+      "bundleIdentifier": "com.spotify.client",
+      "version": "0.50.0",
+      "versionDate": "2026-10-08T22:17:09Z",
+      "size": 132877139,
+      "downloadURL": "https://github.com/samj-exe/taurus/releases/download/v0.50.0/Taurus-0.50.0.ipa",
+      "localizedDescription": "taurus: the free, open-sourced alternative to chroma.pw with built-in spotify premium",
+      "iconURL": "https://raw.githubusercontent.com/samj-exe/taurus/development/docs/icon.png"
+    }
+  ]
+}

@@ -594,7 +594,7 @@ static void completed(id delegate, NSURLSession *session, NSURLSessionTask *task
     SGLyricsMigrateLegacyKeys();
     if (!SGLyricsEnabled()) return;
     %init(SGLyricsReplies);
-    BOOL everyTrack = SGFlag(SGKeyLyricsAllTracks, NO);
+    BOOL everyTrack = SGFlag(SGKeyLyricsAllTracks, YES);
     if (everyTrack) {
         // The generator gives a class that only inherits the method an override of its own, which would
         // put a second hook in front of NSURLSession's.

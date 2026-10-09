@@ -93,7 +93,7 @@ static void takeDown(UIView *view) {
 %end
 
 %ctor {
-    if (SGHidden(SGKeyHideAds)) {
+    if (SGFlag(SGKeyHideAds, YES)) {
         %init(Ads);
         SGRequireClasses(@[
             @"_TtC19AdsPlatform_AdsImpl14AdsServiceImpl",
@@ -109,7 +109,7 @@ static void takeDown(UIView *view) {
             @"_TtC18AdsPlatform_ECMKit37AdsSponsoredPlaylistHeaderCentralView",
         ]);
     }
-    if (SGHidden(SGKeyHideUpsells)) {
+    if (SGFlag(SGKeyHideUpsells, YES)) {
         %init(Upsells);
         SGRequireClasses(@[
             @"_TtC19Upsells_ServiceImpl18UpsellsServiceImpl",

@@ -13,14 +13,14 @@ SGModSection *SGLyricsSourcesSection(BOOL namingSource) {
         return names.count ? [names componentsJoinedByString:@", "] : @"Off";
     };
     NSMutableArray<SGModRow *> *rows = [NSMutableArray arrayWithObjects:sources,
-        SGOptionRow(@"Lyrics for every track", @"Even where Spotify has none", SGKeyLyricsAllTracks), nil];
+        SGSwitchRow(@"Lyrics for every track", @"Even where Spotify has none", SGKeyLyricsAllTracks), nil];
     [rows addObject:SGSpicyLyricsAPIKeyRow()];
     if (namingSource) [rows addObject:SGOptionRow(@"Show source", nil, SGKeyLyricsCredit)];
     return SGSection(@"Sources", rows);
 }
 
 SGModRow *SGLockScreenLyricsRow(void) {
-    return SGOptionRow(@"Lock screen lyrics", @"Current line in place of the artist", SGKeyLockScreenLyrics);
+    return SGSwitchRow(@"Lock screen lyrics", @"Current line in place of the artist", SGKeyLockScreenLyrics);
 }
 
 SGModRow *SGLyricsTranslationLanguageRow(void) {

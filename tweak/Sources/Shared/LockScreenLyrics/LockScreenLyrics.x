@@ -178,7 +178,7 @@ static BOOL playingBy(NSDictionary *info) {
 %end
 
 %ctor {
-    if (!SGFlag(SGKeyLockScreenLyrics, NO)) return;
+    if (!SGFlag(SGKeyLockScreenLyrics, YES)) return;
     sg_lock = [NSObject new];
     %init;
     // The timer waits for Spotify to report a playing track; nothing before that has a line to show.

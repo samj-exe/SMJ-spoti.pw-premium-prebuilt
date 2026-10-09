@@ -1,0 +1,29 @@
+{
+  "name": "taurus",
+  "identifier": "pw.taurus.source",
+  "subtitle": "Taurus releases for SideStore and Feather",
+  "iconURL": "https://raw.githubusercontent.com/samj-exe/taurus/development/docs/icon.png",
+  "website": "https://github.com/samj-exe/taurus",
+  "tintColor": "37F200",
+  "apps": [
+    {
+      "name": "taurus",
+      "bundleIdentifier": "com.spotify.client",
+      "developerName": "samj.",
+      "subtitle": "taurus: the free, open-sourced alternative to chroma.pw with built-in spotify premium",
+      "localizedDescription": "Open-Sourced fork of chroma.pw with built-in Spotify Premium. The Redesigned UI requires iOS 26; the legacy UI supports iOS 16.1 and later.",
+      "iconURL": "https://raw.githubusercontent.com/samj-exe/taurus/development/docs/icon.png",
+      "tintColor": "37F200",
+      "versions": [
+        {
+          "version": "0.50.0",
+          "date": "2026-10-08T22:17:09Z",
+          "downloadURL": "https://github.com/samj-exe/taurus/releases/download/v0.50.0/Taurus-0.50.0.ipa",
+          "size": 132877139,
+          "minOSVersion": "16.1"
+        }
+      ],
+      "appPermissions": {}
+    }
+  ]
+}

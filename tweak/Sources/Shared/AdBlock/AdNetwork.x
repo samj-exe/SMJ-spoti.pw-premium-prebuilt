@@ -273,8 +273,8 @@ static NSURLRequest *unconditional(NSURLRequest *request) {
 %end
 
 %ctor {
-    ads = SGHidden(SGKeyHideAds);
-    premium = SGHidden(SGKeyFakePremium);
+    ads = SGFlag(SGKeyHideAds, YES);
+    premium = SGFlag(SGKeyFakePremium, YES);
     if (!ads && !premium) return;
     started = NSDate.date;
     cacheLock = [NSObject new];

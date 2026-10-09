@@ -389,7 +389,7 @@ void SGSetPlayerPitchFollowsSpeed(BOOL follows) {
 
 %ctor {
     storeFloat(&sg_speedBits, 1);
-    sg_follows = SGEnabled(SGKeyPitchFollowsSpeed);
+    sg_follows = SGFlag(SGKeyPitchFollowsSpeed, NO);
     static const SGAudioProcessor processor = {prepareOutput, rendered};
     SGAudioPipelineRegister(SGAudioStageSpeedPitch, &processor);
     SGAudioPipelineSetPullProcessor(processPull);

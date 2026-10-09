@@ -15,7 +15,7 @@
 %end
 
 %ctor {
-    if (!SGHidden(SGKeyFakePremium)) return;
+    if (!SGFlag(SGKeyFakePremium, YES)) return;
     %init;
     SGRequireClasses(@[@"_TtC31Preferences_CorePreferencesImpl28SPTPreferencesImplementation"]);
 }
